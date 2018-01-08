@@ -32,3 +32,6 @@ lazy val storer = (project in file("storer"))
     name := "storer"
   )
   .settings(commonSettings)
+  .settings(libraryDependencies ++= Seq(
+    "io.getquill" %% "quill-cassandra" % "2.3.2"
+  ))
