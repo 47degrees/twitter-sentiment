@@ -1,13 +1,12 @@
 package storer
 
-
 import config.storerconfig._
-import model.TweetMessage
 import PubSubReader._
+import io.getquill.{CassandraAsyncContext, SnakeCase}
 
 object Main extends App {
 
-  import CassandraPersister._
+  import CassandraRepository._
 
   getConfig() match {
     case Left(error) =>
@@ -15,15 +14,9 @@ object Main extends App {
       System.exit(-1)
 
     case Right(config) =>
-      startPubsubReader(config.google, cassandraPersist)
-
-
-
-
+      val twitterdb: CassandraAsyncContext[SnakeCase] = new CassandraAsyncContext(SnakeCase, "cassandra.twittersentiment")
+      startPubsubReader(config.google, cassandraPersist(ctx = twitterdb))
 
   }
-
-
-
 
 }

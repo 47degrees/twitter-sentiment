@@ -4,7 +4,6 @@ import classy.generic._
 import classy.config._
 import com.typesafe.config.Config
 
-
 case class MyConfig(
   google: Google
 )

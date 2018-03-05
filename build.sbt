@@ -6,16 +6,19 @@ lazy val commonSettings: Seq[Def.Setting[_]] = Seq(
     "com.google.cloud" % "google-cloud-pubsub" % "0.32.0-beta",
     "com.47deg" %% "classy-core" % caseClassyV,
     "com.47deg" %% "classy-config-typesafe" % caseClassyV,
-    "com.47deg" %% "classy-generic" % caseClassyV)
+    "com.47deg" %% "classy-generic" % caseClassyV,
+    "com.whisk" %% "docker-testkit-scalatest" % "0.9.6" % IntegrationTest,
+    "com.whisk" %% "docker-testkit-impl-spotify" % "0.9.6" % IntegrationTest,
+  )
 )
 
 lazy val reader = (project in file("reader"))
   .settings(
-     inThisBuild(List(
-       organization := "47deg",
-       scalaVersion := "2.12.4"
-     )),
-     name := "reader"
+    inThisBuild(List(
+      organization := "47deg",
+      scalaVersion := "2.12.4"
+    )),
+    name := "reader"
   )
   .settings(moduleName := "reader")
   .settings(commonSettings)
@@ -24,6 +27,7 @@ lazy val reader = (project in file("reader"))
   ))
 
 lazy val storer = (project in file("storer"))
+  .configs(IntegrationTest)
   .settings(
     inThisBuild(List(
       organization := "47deg",
@@ -31,7 +35,8 @@ lazy val storer = (project in file("storer"))
     )),
     name := "storer"
   )
-  .settings(commonSettings)
+  .settings(commonSettings,
+    Defaults.itSettings)
   .settings(libraryDependencies ++= Seq(
-    "io.getquill" %% "quill-cassandra" % "2.3.2"
-  ))
+    "io.getquill" %% "quill-cassandra" % "2.3.2")
+  )

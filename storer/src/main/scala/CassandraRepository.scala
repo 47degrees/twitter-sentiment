@@ -4,26 +4,23 @@ import io.getquill.{CassandraAsyncContext, SnakeCase}
 import model.TweetMessage
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait Persister[A] {
-  def persist(a: A): Unit
+trait Repository[A] {
+  def   persist(a: A): Unit
 }
 
-object CassandraPersister {
+object CassandraRepository {
 
-  val twitterdb = new CassandraAsyncContext(SnakeCase, "twittersentiment")
-  import twitterdb._
-
-  val cassandraPersist: Persister[TweetMessage] = new Persister[TweetMessage] {
+  def cassandraPersist(ctx: CassandraAsyncContext[SnakeCase]): Repository[TweetMessage] = new Repository[TweetMessage] {
+    import ctx._
     override def persist(twmsg: TweetMessage): Unit = {
 
-      println("Persisting: ", twmsg)
-      val insertop = quote {
+      val insertStatement = quote {
         query[TweetMessage].insert(
           _.messageId -> lift(twmsg.messageId),
           _.data -> lift(twmsg.data)
         )
       }
-      twitterdb.run(insertop)
+      ctx.run(insertStatement)
     }
   }
 }

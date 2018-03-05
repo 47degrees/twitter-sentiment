@@ -19,7 +19,7 @@ object PubSubReader {
   }
 
 
-  def startPubsubReader(googleconfig: Google, persister: Persister[TweetMessage]): Unit = {
+  def startPubsubReader(googleconfig: Google, persister: Repository[TweetMessage]): Unit = {
 
     val subscriptionName: SubscriptionName = SubscriptionName.of(googleconfig.project, googleconfig.pubsub.subscriptionname);
     val response = Either.catchNonFatal(Subscriber.newBuilder(subscriptionName, receiver).build())
