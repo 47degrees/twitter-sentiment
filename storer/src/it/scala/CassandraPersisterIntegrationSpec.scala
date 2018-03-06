@@ -1,14 +1,12 @@
 package storer
 
-
-import com.datastax.driver.core.Cluster
 import com.whisk.docker.impl.spotify.DockerKitSpotify
-import io.getquill.{CassandraAsyncContext, SnakeCase}
 import model.TweetMessage
 import storer.CassandraRepository.cassandraPersist
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Matchers, WordSpec}
 import com.whisk.docker.scalatest.DockerTestKit
 import org.scalatest.concurrent.ScalaFutures
+import InitializeTests._
 
 class CassandraPersisterIntegrationSpec
   extends WordSpec
@@ -20,33 +18,13 @@ class CassandraPersisterIntegrationSpec
     with DockerKitSpotify
     with DockerCassandraService {
 
-
-  //lazy val twitterdb = new CassandraAsyncContext(SnakeCase, "cassandra.twittersentiment")
-
-  lazy val clusterWithoutSSL =
-    Cluster.builder()
-      .withPort(9043)
-      .addContactPoint("localhost")
-      .withCredentials("cassandra", "cassandra").build()
-
-  lazy val ctx = new CassandraAsyncContext[SnakeCase](
-    naming = SnakeCase,
-    cluster = clusterWithoutSSL,
-    keyspace = "twittersentiment",
-    preparedStatementCacheSize = 100
-  )
-
-  import ctx._
-
+  import InitializeTests.ctx._
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    // if you want to write more integration test suites and run the migration only once, a different approach is needed
-//    val flyway = new Flyway()
-//    flyway.setDataSource(postgresUrl, postgresUsername, postgresPassword)
-//    flyway.migrate()
-  }
+    initializeKeyspaces()
 
+  }
 
   "sentiment repository" when {
 

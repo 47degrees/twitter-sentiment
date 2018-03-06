@@ -38,5 +38,6 @@ lazy val storer = (project in file("storer"))
   .settings(commonSettings,
     Defaults.itSettings)
   .settings(libraryDependencies ++= Seq(
-    "io.getquill" %% "quill-cassandra" % "2.3.2")
+    "io.getquill" %% "quill-cassandra" % "2.3.2",
+    "org.cassandraunit" % "cassandra-unit" % "3.3.0.2" % IntegrationTest)
   )
