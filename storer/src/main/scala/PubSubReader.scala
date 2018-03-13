@@ -25,12 +25,14 @@ object PubSubReader {
     val response = Either.catchNonFatal(Subscriber.newBuilder(subscriptionName, receiver).build())
 
     response match {
-      case Left(e) => System.err.println("WARNING: Got non fatal exception when creating the pubsub subscriber." + e.getMessage)
+      case Left(e) => System.err.println(s"WARNING: Got non fatal exception when creating the pubsub subscriber. ${e.getMessage}")
       case Right(subscriber) =>
         subscriber.startAsync().awaitRunning()
         while(true) {
           val pubsubmsg: PubsubMessage = messages.take()
-          val tweetmsg = TweetMessage(pubsubmsg.getMessageId(), pubsubmsg.getData().toStringUtf8())
+          val msg_text = pubsubmsg.getData().toStringUtf8()
+          System.out.println(s"Saving in the Database: ${msg_text}")
+          val tweetmsg = TweetMessage(pubsubmsg.getMessageId(), msg_text)
           persister.persist(tweetmsg)
         }
     }
