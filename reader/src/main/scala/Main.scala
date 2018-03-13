@@ -11,7 +11,7 @@ import com.google.protobuf.ByteString
 import cats.syntax.either._
 
 import config.Google
-import config.myconfig._
+import config.configuration._
 
 object Main extends App {
 

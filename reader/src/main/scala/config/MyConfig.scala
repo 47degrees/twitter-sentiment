@@ -19,7 +19,7 @@ case class PubSub(
 )
 
 
-object myconfig {
+object configuration {
 
   val decoder = deriveDecoder[Config, MyConfig]
 
