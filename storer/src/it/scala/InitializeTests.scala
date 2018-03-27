@@ -4,12 +4,20 @@ import com.datastax.driver.core.Cluster
 import io.getquill.{CassandraAsyncContext, SnakeCase}
 import org.cassandraunit.CQLDataLoader
 import org.cassandraunit.dataset.cql.ClassPathCQLDataSet
+import storer.integrationConfig._
+import cats.implicits._
 
 object InitializeTests {
 
+
+  val cassandraHostPort = getConfig.leftMap{ error =>
+    System.err.println("config error: " + error)
+    System.exit(-1)
+  }.map { config => config.docker.dockerCassandraHostPort}.getOrElse(9044)
+
   lazy val clusterWithoutSSL =
     Cluster.builder()
-      .withPort(9043)
+      .withPort(cassandraHostPort)
       .addContactPoint("localhost")
       .withCredentials("cassandra", "cassandra").build()
 

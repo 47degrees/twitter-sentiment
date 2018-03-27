@@ -35,7 +35,7 @@ class CassandraPersisterIntegrationSpec
         cassandraPersist(ctx).persist(testTweet)
 
         val q = quote {
-          query[TweetMessage].filter(tw => tw.messageId == lift(testTweet.messageId))
+          query[TweetMessage].filter(_.messageId == lift(testTweet.messageId))
         }
         val returnedTweets = ctx.run(q)
 
