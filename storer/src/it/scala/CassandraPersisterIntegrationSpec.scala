@@ -32,14 +32,15 @@ class CassandraPersisterIntegrationSpec
 
     "saving a tweet" should {
       "persist it into the database" in {
-        cassandraPersist(ctx).persist(testTweet)
+        cassandraPersist(ctx).persist(testTweet).map { v =>
 
-        val q = quote {
-          query[TweetMessage].filter(_.messageId == lift(testTweet.messageId))
+          val q = quote {
+            query[TweetMessage].filter(_.messageId == lift(testTweet.messageId))
+          }
+          val returnedTweets = ctx.run(q)
+
+          returnedTweets.futureValue.headOption should contain(testTweet)
         }
-        val returnedTweets = ctx.run(q)
-
-        returnedTweets.futureValue.headOption should contain(testTweet)
       }
     }
   }
